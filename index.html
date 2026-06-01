@@ -2,116 +2,138 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Khelo Mirror - Live Evaluation</title>
     <style>
+        /* CSS Reset & Variables */
         :root {
-            --bg-main: #121418;
-            --card-bg: #1e2229;
-            --text-light: #ffffff;
-            --text-dim: #9ca3af;
-            --evo-color: #facc15; /* Evolution Gold */
-            --ezugi-color: #ef4444; /* Ezugi Red */
-            --balance-green: #22c55e;
+            --bg-dark: #0a0a0c;
+            --bg-surface: #1a1b20;
+            --bg-card: #24252b;
+            --primary-gold: #ffc700;
+            --text-main: #ffffff;
+            --text-muted: #8b8c91;
+            --balance-green: #00e701;
+            --evo-color: #facc15;
+            --ezugi-color: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-light);
-            padding-bottom: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding-bottom: 70px; /* Space for bottom nav */
         }
 
-        /* Top Navigation */
-        .navbar {
-            background-color: #0b0c0f;
-            padding: 15px 20px;
+        /* Top Header */
+        .app-header {
+            background-color: var(--bg-surface);
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #2a2e37;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2a2b30;
         }
 
         .brand {
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            color: var(--text-light);
-        }
-
-        .brand span { color: var(--evo-color); }
-
-        /* Container & Wallet */
-        .container {
-            padding: 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .wallet {
-            background: linear-gradient(135deg, #1f2937, #111827);
-            border: 1px solid #374151;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        }
-
-        .wallet-title {
-            font-size: 13px;
-            color: var(--text-dim);
+            font-size: 18px;
+            font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 5px;
+            color: var(--text-main);
         }
 
-        .wallet-amount {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--balance-green);
-            margin: 0;
+        .brand span {
+            color: var(--primary-gold);
         }
 
-        /* Filter Tabs */
-        .filters {
+        /* Wallet Section */
+        .wallet-pill {
+            background-color: #121316;
+            border: 1px solid #33343a;
+            border-radius: 20px;
+            padding: 6px 14px;
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 8px;
         }
 
-        .filter-btn {
-            background-color: #374151;
-            color: white;
-            border: none;
-            padding: 8px 16px;
+        .wallet-icon {
+            font-size: 14px;
+        }
+
+        .balance-text {
+            color: var(--balance-green);
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        /* Horizontal Scroll Categories */
+        .category-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 12px 16px;
+            gap: 10px;
+            background-color: var(--bg-dark);
+            /* Hide scrollbar */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-btn {
+            background-color: var(--bg-surface);
+            color: var(--text-muted);
+            border: 1px solid #2a2b30;
+            padding: 8px 18px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .filter-btn.active {
-            background-color: var(--evo-color);
+        .cat-btn.active {
+            background-color: var(--primary-gold);
             color: #000;
+            border-color: var(--primary-gold);
         }
 
         /* Game Grid */
+        .game-container {
+            padding: 10px 16px;
+        }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile app feel */
+            gap: 12px;
         }
 
         .card {
-            background-color: var(--card-bg);
-            border-radius: 10px;
+            background-color: var(--bg-card);
+            border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #374151;
+            position: relative;
+            border: 1px solid #2a2b30;
         }
 
         .card-image {
-            height: 110px;
-            background-color: #2d3748;
+            height: 120px;
+            background: linear-gradient(180deg, #2a2b30 0%, #1a1b20 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -119,71 +141,112 @@
         }
 
         .card-details {
-            padding: 12px;
-            position: relative;
+            padding: 10px;
+            background-color: var(--bg-surface);
         }
 
         .game-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            margin: 0 0 5px 0;
+            margin: 0 0 4px 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* Dynamic Provider Badges */
         .provider-badge {
             font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
-            padding: 3px 6px;
-            border-radius: 4px;
-            display: inline-block;
         }
+        .evo-text { color: var(--evo-color); }
+        .ezugi-text { color: var(--ezugi-color); }
 
-        .badge-evolution {
-            background-color: rgba(250, 204, 21, 0.2);
-            color: var(--evo-color);
-        }
-
-        .badge-ezugi {
-            background-color: rgba(239, 68, 68, 0.2);
-            color: var(--ezugi-color);
-        }
-
-        .status {
+        /* Loading State */
+        .loader {
             text-align: center;
-            color: var(--evo-color);
-            padding: 40px;
+            padding: 40px 20px;
+            color: var(--primary-gold);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Bottom App Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--bg-surface);
+            border-top: 1px solid #2a2b30;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-gold);
+        }
+
+        .nav-icon {
+            font-size: 20px;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="brand">KHELO<span>MIRROR</span></div>
-        <div style="color: white;">⚙️</div>
-    </nav>
-
-    <div class="container">
-        <div class="wallet">
-            <div class="wallet-title">User Balance</div>
-            <div class="wallet-amount" id="balance-display">₹0.00</div>
+    <header class="app-header">
+        <div class="brand">Khelo<span>247</span></div>
+        <div class="wallet-pill">
+            <span class="wallet-icon">💰</span>
+            <span class="balance-text" id="balance-display">₹0.00</span>
         </div>
+    </header>
 
-        <div class="filters">
-            <button class="filter-btn active">Live Casino</button>
-            <button class="filter-btn">Evolution</button>
-            <button class="filter-btn">Ezugi</button>
-        </div>
-        
-        <div id="loading" class="status">Connecting to Evaluation Backend...</div>
+    <div class="category-scroll">
+        <div class="cat-btn active" onclick="filterGames('All', this)">Live Casino</div>
+        <div class="cat-btn" onclick="filterGames('Evolution', this)">Evolution</div>
+        <div class="cat-btn" onclick="filterGames('Ezugi', this)">Ezugi</div>
+    </div>
+
+    <div class="game-container">
+        <div id="loading" class="loader">Loading Live Tables...</div>
         <div class="grid" id="games-grid"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item active">
+            <span class="nav-icon">🎰</span>
+            <span>Casino</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">📄</span>
+            <span>Bets</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </div>
     </div>
 
     <script>
         const API_URL = 'https://khelo247-com.vercel.app/api/live-casino-mirror';
+        let allGames = []; // Store games globally so we can filter them
 
         async function init() {
             try {
@@ -193,36 +256,66 @@
                 document.getElementById('loading').style.display = 'none';
 
                 if (result.success) {
-                    // Update Balance
+                    // 1. Set Balance
                     document.getElementById('balance-display').innerText = `₹${result.data.balance}`;
-
-                    // Populate Games
-                    const grid = document.getElementById('games-grid');
                     
-                    result.data.liveGames.forEach((game, index) => {
-                        const emojis = ['🎰', '🃏', '🎲', '👑'];
-                        const icon = emojis[index % emojis.length];
-                        
-                        // Determine badge color based on provider
-                        const badgeClass = game.provider === 'Evolution' ? 'badge-evolution' : 'badge-ezugi';
-
-                        const card = `
-                            <div class="card">
-                                <div class="card-image">${icon}</div>
-                                <div class="card-details">
-                                    <h3 class="game-title">${game.title}</h3>
-                                    <span class="provider-badge ${badgeClass}">${game.provider}</span>
-                                </div>
-                            </div>
-                        `;
-                        grid.innerHTML += card;
-                    });
+                    // 2. Save games to memory for the filter buttons
+                    allGames = result.data.liveGames;
+                    
+                    // 3. Render all games initially
+                    renderGames(allGames);
                 }
             } catch (err) {
-                document.getElementById('loading').innerText = 'Connection Failed';
+                document.getElementById('loading').innerText = 'Connection Error. Please refresh.';
             }
         }
 
+        function renderGames(gamesToRender) {
+            const grid = document.getElementById('games-grid');
+            grid.innerHTML = ''; // Clear current grid
+            
+            if(gamesToRender.length === 0) {
+                grid.innerHTML = '<div style="color: white; padding: 20px; grid-column: span 2; text-align: center;">No games found for this provider.</div>';
+                return;
+            }
+
+            gamesToRender.forEach((game, index) => {
+                // Emulate game thumbnails
+                const emojis = ['🙎‍♀️', '🃏', '🎲', '🎡'];
+                const icon = emojis[index % emojis.length];
+                
+                const isEvo = game.provider === 'Evolution';
+                const providerClass = isEvo ? 'evo-text' : 'ezugi-text';
+                
+                const card = `
+                    <div class="card">
+                        <div class="card-image">${icon}</div>
+                        <div class="card-details">
+                            <h3 class="game-title">${game.title}</h3>
+                            <span class="provider-badge ${providerClass}">${game.provider}</span>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        // Logic for the Filter Buttons
+        window.filterGames = function(provider, buttonElement) {
+            // Update active button styling
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+            buttonElement.classList.add('active');
+
+            // Filter the array
+            if (provider === 'All') {
+                renderGames(allGames);
+            } else {
+                const filtered = allGames.filter(game => game.provider === provider);
+                renderGames(filtered);
+            }
+        };
+
+        // Start the app
         window.onload = init;
     </script>
 </body>
