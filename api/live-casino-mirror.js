@@ -1,49 +1,63 @@
-import axios from 'axios';
 import * as cheerio from 'cheerio';
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   try {
-    // 1. Pull secure keys from Vercel
-    const scraperApiKey = process.env.SCRAPER_API_KEY; 
-    const targetUrl = process.env.TARGET_CASINO_URL; 
+    // 1. Hardcode the exact filename so Vercel includes it in the build
+    const exactFileName = 'Khelo24bet _ Live Fun Arena for Online Challenges.mht';
+    
+    // 2. Point directly to the file in the root directory
+    const filePath = path.join(process.cwd(), exactFileName);
 
-    if (!scraperApiKey || !targetUrl) {
-      return res.status(500).json({ error: 'Missing Environment Variables in Vercel' });
+    // 3. Check that Vercel successfully bundled it
+    if (!fs.existsSync(filePath)) {
+       return res.status(404).json({ 
+         success: false,
+         error: 'File stripped by Vercel.', 
+         message: `Vercel could not find the file. Ensure the name matches exactly: ${exactFileName}` 
+       });
     }
 
-    // 2. The Speed Fix: We removed '&render=true' to prevent the 30-second timeout.
-    // This grabs the raw HTML instantly via the proxy network.
-    const apiUrl = `http://api.scraperapi.com?api_key=${scraperApiKey}&url=${encodeURIComponent(targetUrl)}`;
+    // 4. Read the raw data directly from the file system
+    let rawArchiveData = fs.readFileSync(filePath, 'utf-8');
 
-    // Set a strict 10-second timeout so Vercel doesn't crash blindly
-    const { data: html } = await axios.get(apiUrl, { timeout: 10000 }); 
-    const $ = cheerio.load(html);
-    
-    // 3. Extract the data using our generic selectors
-    const liveGames = [];
-    
+    // 5. Clean up the MHT encoding so Cheerio can read it
+    let cleanHtml = rawArchiveData.replace(/=3D/g, '=');
+    cleanHtml = cleanHtml.replace(/=\r?\n/g, '');
+
+    // 6. Load the cleaned HTML into Cheerio
+    const $ = cheerio.load(cleanHtml);
+
+    // 7. Extract the data
+    const extractedData = {
+      source: exactFileName,
+      balance: $('.balance, .account-balance, [class*="balance"]').first().text().trim() || '0.00',
+      liveGames: []
+    };
+
+    // Extract game list based on generic wrapper classes
     $('.game-card, .casino-game, [class*="game"]').each((index, element) => {
-      liveGames.push({
+      extractedData.liveGames.push({
         title: $(element).find('h3, .title, [class*="title"]').text().trim() || `Game ${index + 1}`
       });
     });
 
+    // 8. Return the payload instantly
     return res.status(200).json({
       success: true,
-      timestamp: new Date().toISOString(),
-      balance: $('.balance, .account-balance, [class*="balance"]').first().text().trim() || 'Hidden',
-      data: liveGames
+      data: extractedData
     });
 
   } catch (error) {
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Live Scraping Pipeline Failed',
-      details: error.message 
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to process offline MHT file',
+      details: error.message
     });
   }
 }
 
-// Triggering a fresh build for the live Fast Fetch pipeline
+// Reverting to the reliable offline .mht file to populate the frontend UI instantly.
