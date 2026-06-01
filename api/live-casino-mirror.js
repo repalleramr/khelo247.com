@@ -45,4 +45,4 @@ export default async function handler(req, res) {
   }
 }
 
-// Triggering a fresh Vercel build to load the new Environment Variables
+//  Triggering a fresh Vercel build to load the new Environment Variables
