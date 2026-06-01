@@ -3,223 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khelo Mirror - Live Dashboard</title>
+    <title>Khelo Mirror - Live Evaluation</title>
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-gold: #fbbf24;
-            --accent-green: #10b981;
+            --bg-main: #121418;
+            --card-bg: #1e2229;
+            --text-light: #ffffff;
+            --text-dim: #9ca3af;
+            --evo-color: #facc15; /* Evolution Gold */
+            --ezugi-color: #ef4444; /* Ezugi Red */
+            --balance-green: #22c55e;
         }
 
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            -webkit-font-smoothing: antialiased;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            padding-bottom: 40px;
         }
 
-        /* Navbar */
-        header {
-            background-color: #0b1120;
-            padding: 16px 20px;
+        /* Top Navigation */
+        .navbar {
+            background-color: #0b0c0f;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #1e293b;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border-bottom: 1px solid #2a2e37;
         }
 
-        .logo {
-            font-size: 22px;
+        .brand {
+            font-size: 20px;
             font-weight: 800;
-            color: var(--accent-gold);
             letter-spacing: 1px;
+            color: var(--text-light);
         }
 
-        /* Main Container */
+        .brand span { color: var(--evo-color); }
+
+        /* Container & Wallet */
         .container {
             padding: 20px;
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
-        /* Wallet Card */
-        .wallet-card {
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            border: 1px solid #334155;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
+        .wallet {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
-        .wallet-label {
-            font-size: 14px;
-            color: var(--text-muted);
+        .wallet-title {
+            font-size: 13px;
+            color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
-        .wallet-balance {
-            font-size: 36px;
+        .wallet-amount {
+            font-size: 32px;
             font-weight: 800;
-            color: var(--accent-green);
+            color: var(--balance-green);
             margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .wallet-balance::before {
-            content: '₹';
-            color: var(--text-muted);
-            font-size: 28px;
-        }
-
-        /* Games Section */
-        .section-header {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
+        /* Filter Tabs */
+        .filters {
             display: flex;
-            align-items: center;
             gap: 10px;
+            margin-bottom: 20px;
         }
 
-        .games-grid {
+        .filter-btn {
+            background-color: #374151;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .filter-btn.active {
+            background-color: var(--evo-color);
+            color: #000;
+        }
+
+        /* Game Grid */
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
         }
 
-        .game-card {
+        .card {
             background-color: var(--card-bg);
-            border: 1px solid #334155;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
-            transition: transform 0.2s;
+            border: 1px solid #374151;
         }
 
-        .game-card:active {
-            transform: scale(0.96);
-        }
-
-        .game-thumb {
-            height: 100px;
-            background-color: #26334a;
+        .card-image {
+            height: 110px;
+            background-color: #2d3748;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
+            font-size: 40px;
         }
 
-        .game-info {
+        .card-details {
             padding: 12px;
+            position: relative;
         }
 
         .game-title {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
-            margin: 0;
+            margin: 0 0 5px 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: var(--text-main);
         }
 
-        /* Loading State */
-        .loader {
+        /* Dynamic Provider Badges */
+        .provider-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 3px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .badge-evolution {
+            background-color: rgba(250, 204, 21, 0.2);
+            color: var(--evo-color);
+        }
+
+        .badge-ezugi {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: var(--ezugi-color);
+        }
+
+        .status {
             text-align: center;
-            padding: 50px;
-            color: var(--accent-gold);
-            font-weight: 600;
+            color: var(--evo-color);
+            padding: 40px;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">KHELO MIRROR</div>
-        <div style="font-size: 24px;">⚙️</div>
-    </header>
+    <nav class="navbar">
+        <div class="brand">KHELO<span>MIRROR</span></div>
+        <div style="color: white;">⚙️</div>
+    </nav>
 
     <div class="container">
-        <div class="wallet-card">
-            <div class="wallet-label">Extracted Balance</div>
-            <h2 class="wallet-balance" id="ui-balance">0.00</h2>
+        <div class="wallet">
+            <div class="wallet-title">User Balance</div>
+            <div class="wallet-amount" id="balance-display">₹0.00</div>
         </div>
 
-        <div class="section-header">🎰 Available Games</div>
+        <div class="filters">
+            <button class="filter-btn active">Live Casino</button>
+            <button class="filter-btn">Evolution</button>
+            <button class="filter-btn">Ezugi</button>
+        </div>
         
-        <div id="loading-state" class="loader">
-            Fetching live data from backend...
-        </div>
-
-        <div class="games-grid" id="ui-games-grid">
-            </div>
+        <div id="loading" class="status">Connecting to Evaluation Backend...</div>
+        <div class="grid" id="games-grid"></div>
     </div>
 
     <script>
-        // 1. Point to your live Vercel API backend
         const API_URL = 'https://khelo247-com.vercel.app/api/live-casino-mirror';
 
-        async function fetchDashboardData() {
+        async function init() {
             try {
-                // 2. Call the API
                 const response = await fetch(API_URL);
                 const result = await response.json();
-
-                // 3. Remove the loading message
-                document.getElementById('loading-state').style.display = 'none';
+                
+                document.getElementById('loading').style.display = 'none';
 
                 if (result.success) {
-                    // 4. Update the Balance UI
-                    document.getElementById('ui-balance').innerText = result.data.balance;
+                    // Update Balance
+                    document.getElementById('balance-display').innerText = `₹${result.data.balance}`;
 
-                    // 5. Update the Games Grid UI
-                    const gridContainer = document.getElementById('ui-games-grid');
-                    gridContainer.innerHTML = ''; // Clear empty grid
-
-                    // Loop through the games array and create a card for each one
+                    // Populate Games
+                    const grid = document.getElementById('games-grid');
+                    
                     result.data.liveGames.forEach((game, index) => {
-                        // Alternate some emojis just to make the UI look dynamic
-                        const emojis = ['🃏', '🎲', '🎰', '💎', '👑'];
-                        const randomEmoji = emojis[index % emojis.length];
+                        const emojis = ['🎰', '🃏', '🎲', '👑'];
+                        const icon = emojis[index % emojis.length];
+                        
+                        // Determine badge color based on provider
+                        const badgeClass = game.provider === 'Evolution' ? 'badge-evolution' : 'badge-ezugi';
 
-                        // Build the HTML for the card
-                        const cardHTML = `
-                            <div class="game-card">
-                                <div class="game-thumb">${randomEmoji}</div>
-                                <div class="game-info">
+                        const card = `
+                            <div class="card">
+                                <div class="card-image">${icon}</div>
+                                <div class="card-details">
                                     <h3 class="game-title">${game.title}</h3>
+                                    <span class="provider-badge ${badgeClass}">${game.provider}</span>
                                 </div>
                             </div>
                         `;
-                        // Inject into the page
-                        gridContainer.innerHTML += cardHTML;
+                        grid.innerHTML += card;
                     });
-                } else {
-                    alert('Backend returned an error: ' + result.error);
                 }
-
-            } catch (error) {
-                document.getElementById('loading-state').innerText = 'Network Error. Could not connect to backend.';
-                console.error('Fetch error:', error);
+            } catch (err) {
+                document.getElementById('loading').innerText = 'Connection Failed';
             }
         }
 
-        // 6. Trigger the fetch as soon as the page loads
-        window.onload = fetchDashboardData;
+        window.onload = init;
     </script>
 </body>
 </html>
