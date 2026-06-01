@@ -3,176 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluation Game API Tester</title>
+    <title>Authenticated Game Mirror Tester</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f9fafb;
-            color: #111827;
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f3f4f6;
             padding: 20px;
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
         }
-        .control-panel {
+        .panel {
             background: white;
             padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 24px;
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #000;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-        button:hover {
-            background-color: #374151;
-        }
-        .status {
-            font-size: 14px;
-            color: #6b7280;
-        }
-        #error-msg {
-            color: #ef4444;
-            font-weight: 500;
-            margin-top: 10px;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 16px;
-            border-left: 4px solid #3b82f6;
-        }
-        .question {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 0 0 12px 0;
-        }
-        .answer {
-            color: #059669;
-            font-weight: 500;
-            margin-bottom: 12px;
-        }
-        .tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .tag {
-            background: #f3f4f6;
-            color: #4b5563;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        .meta-info {
-            font-size: 14px;
-            color: #6b7280;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             margin-bottom: 20px;
         }
+        .field {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea { height: 80px; font-family: monospace; }
+        button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+        button:hover { background: #059669; }
+        .output { background: #1f2937; color: #f9fafb; padding: 16px; border-radius: 6px; overflow-x: auto; font-family: monospace; white-space: pre-wrap; }
+        .status { margin-top: 10px; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <h1>🎮 Evaluation Backend Tester</h1>
+    <h2>🎮 Authenticated Mirror Pipeline Tester</h2>
     
-    <div class="control-panel">
-        <label for="apiUrl"><strong>Vercel API URL:</strong></label>
-        <div class="input-group">
-            <input type="text" id="apiUrl" placeholder="http://localhost:3000/api/easy-mirror" value="http://localhost:3000/api/easy-mirror">
-            <button id="fetchBtn">Run Scraper</button>
+    <div class="panel">
+        <div class="field">
+            <label>Vercel Live API URL:</label>
+            <input type="text" id="apiUrl" value="https://your-project.vercel.app/api/khelo-mirror">
         </div>
-        <div class="status" id="statusText">Ready to fetch data...</div>
-        <div id="error-msg"></div>
+        <div class="field">
+            <label>User Session Cookie (Paste Cookie Header Value):</label>
+            <textarea id="cookieInput" placeholder="e.g., session_id=abc123xyz; token=eyJhbGci..."></textarea>
+        </div>
+        <button id="runBtn">Fetch Authenticated Data</button>
+        <div id="status" class="status"></div>
     </div>
 
-    <div id="meta-container" class="meta-info"></div>
-    <div id="results-container"></div>
+    <h3>Backend JSON Output:</h3>
+    <pre id="outputContainer" class="output">Click run to initiate connection...</pre>
 
     <script>
-        document.getElementById('fetchBtn').addEventListener('click', async () => {
-            const urlInput = document.getElementById('apiUrl').value.trim();
-            const statusText = document.getElementById('statusText');
-            const errorMsg = document.getElementById('error-msg');
-            const resultsContainer = document.getElementById('results-container');
-            const metaContainer = document.getElementById('meta-container');
+        document.getElementById('runBtn').addEventListener('click', async () => {
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            const cookieVal = document.getElementById('cookieInput').value.trim();
+            const status = document.getElementById('status');
+            const output = document.getElementById('outputContainer');
 
-            // Reset UI
-            errorMsg.textContent = '';
-            resultsContainer.innerHTML = '';
-            metaContainer.innerHTML = '';
-            statusText.textContent = '⏳ Scraping data from backend...';
-
-            if (!urlInput) {
-                errorMsg.textContent = 'Please enter a valid API URL.';
-                statusText.textContent = 'Ready to fetch data...';
-                return;
-            }
+            status.textContent = "⏳ Communicating with Vercel Pipeline...";
+            status.style.color = "#3b82f6";
+            output.textContent = "Connecting...";
 
             try {
-                const response = await fetch(urlInput);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-session-cookie': cookieVal
+                    }
+                });
 
-                const payload = await response.json();
+                const data = await response.json();
+                output.textContent = JSON.stringify(data, null, 2);
 
-                if (payload.success) {
-                    statusText.textContent = '✅ Data fetched successfully!';
-                    
-                    // Display Meta Info
-                    metaContainer.innerHTML = `
-                        <strong>Source:</strong> ${payload.source} <br>
-                        <strong>Scraped At:</strong> ${new Date(payload.mirroredAt).toLocaleString()} <br>
-                        <strong>Total Questions:</strong> ${payload.totalQuestions}
-                    `;
-
-                    // Render Questions
-                    payload.data.forEach(item => {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        
-                        const tagsHtml = item.hints.map(tag => `<span class="tag">${tag}</span>`).join('');
-
-                        card.innerHTML = `
-                            <p class="question">Q${item.id}: ${item.question}</p>
-                            <p class="answer">Correct Answer: ${item.correctAnswer}</p>
-                            <div class="tags">Hints: ${tagsHtml}</div>
-                        `;
-                        
-                        resultsContainer.appendChild(card);
-                    });
+                if (data.success) {
+                    status.textContent = "✅ Extraction Completed Successfully!";
+                    status.style.color = "#10b981";
                 } else {
-                    throw new Error(payload.error || 'Unknown error occurred on the backend.');
+                    status.textContent = `❌ Backend Error: ${data.error}`;
+                    status.style.color = "#ef4444";
                 }
-
-            } catch (error) {
-                console.error("Fetch error:", error);
-                errorMsg.textContent = `Error fetching data: ${error.message}`;
-                statusText.textContent = '❌ Failed to fetch data.';
+            } catch (err) {
+                status.textContent = "❌ Network Execution Failed.";
+                status.style.color = "#ef4444";
+                output.textContent = err.message;
             }
         });
     </script>
