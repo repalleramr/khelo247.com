@@ -3,110 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authenticated Game Mirror Tester</title>
+    <title>Khelo Mirror - Live Dashboard</title>
     <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-gold: #fbbf24;
+            --accent-green: #10b981;
+        }
+
         body {
+            margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f3f4f6;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navbar */
+        header {
+            background-color: #0b1120;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+        }
+
+        /* Main Container */
+        .container {
             padding: 20px;
-            max-width: 700px;
+            max-width: 1200px;
             margin: 0 auto;
         }
-        .panel {
-            background: white;
+
+        /* Wallet Card */
+        .wallet-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 16px;
             padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
-        .field {
-            margin-bottom: 16px;
-        }
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            box-sizing: border-box;
+
+        .wallet-label {
             font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
         }
-        textarea { height: 80px; font-family: monospace; }
-        button {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
-            cursor: pointer;
+
+        .wallet-balance {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wallet-balance::before {
+            content: '₹';
+            color: var(--text-muted);
+            font-size: 28px;
+        }
+
+        /* Games Section */
+        .section-header {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .game-card {
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .game-card:active {
+            transform: scale(0.96);
+        }
+
+        .game-thumb {
+            height: 100px;
+            background-color: #26334a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .game-info {
+            padding: 12px;
+        }
+
+        .game-title {
+            font-size: 13px;
             font-weight: 600;
-            width: 100%;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-main);
         }
-        button:hover { background: #059669; }
-        .output { background: #1f2937; color: #f9fafb; padding: 16px; border-radius: 6px; overflow-x: auto; font-family: monospace; white-space: pre-wrap; }
-        .status { margin-top: 10px; font-weight: 500; }
+
+        /* Loading State */
+        .loader {
+            text-align: center;
+            padding: 50px;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
 
-    <h2>🎮 Authenticated Mirror Pipeline Tester</h2>
-    
-    <div class="panel">
-        <div class="field">
-            <label>Vercel Live API URL:</label>
-            <input type="text" id="apiUrl" value="https://your-project.vercel.app/api/khelo-mirror">
+    <header>
+        <div class="logo">KHELO MIRROR</div>
+        <div style="font-size: 24px;">⚙️</div>
+    </header>
+
+    <div class="container">
+        <div class="wallet-card">
+            <div class="wallet-label">Extracted Balance</div>
+            <h2 class="wallet-balance" id="ui-balance">0.00</h2>
         </div>
-        <div class="field">
-            <label>User Session Cookie (Paste Cookie Header Value):</label>
-            <textarea id="cookieInput" placeholder="e.g., session_id=abc123xyz; token=eyJhbGci..."></textarea>
+
+        <div class="section-header">🎰 Available Games</div>
+        
+        <div id="loading-state" class="loader">
+            Fetching live data from backend...
         </div>
-        <button id="runBtn">Fetch Authenticated Data</button>
-        <div id="status" class="status"></div>
+
+        <div class="games-grid" id="ui-games-grid">
+            </div>
     </div>
 
-    <h3>Backend JSON Output:</h3>
-    <pre id="outputContainer" class="output">Click run to initiate connection...</pre>
-
     <script>
-        document.getElementById('runBtn').addEventListener('click', async () => {
-            const apiUrl = document.getElementById('apiUrl').value.trim();
-            const cookieVal = document.getElementById('cookieInput').value.trim();
-            const status = document.getElementById('status');
-            const output = document.getElementById('outputContainer');
+        // 1. Point to your live Vercel API backend
+        const API_URL = 'https://khelo247-com.vercel.app/api/live-casino-mirror';
 
-            status.textContent = "⏳ Communicating with Vercel Pipeline...";
-            status.style.color = "#3b82f6";
-            output.textContent = "Connecting...";
-
+        async function fetchDashboardData() {
             try {
-                const response = await fetch(apiUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-session-cookie': cookieVal
-                    }
-                });
+                // 2. Call the API
+                const response = await fetch(API_URL);
+                const result = await response.json();
 
-                const data = await response.json();
-                output.textContent = JSON.stringify(data, null, 2);
+                // 3. Remove the loading message
+                document.getElementById('loading-state').style.display = 'none';
 
-                if (data.success) {
-                    status.textContent = "✅ Extraction Completed Successfully!";
-                    status.style.color = "#10b981";
+                if (result.success) {
+                    // 4. Update the Balance UI
+                    document.getElementById('ui-balance').innerText = result.data.balance;
+
+                    // 5. Update the Games Grid UI
+                    const gridContainer = document.getElementById('ui-games-grid');
+                    gridContainer.innerHTML = ''; // Clear empty grid
+
+                    // Loop through the games array and create a card for each one
+                    result.data.liveGames.forEach((game, index) => {
+                        // Alternate some emojis just to make the UI look dynamic
+                        const emojis = ['🃏', '🎲', '🎰', '💎', '👑'];
+                        const randomEmoji = emojis[index % emojis.length];
+
+                        // Build the HTML for the card
+                        const cardHTML = `
+                            <div class="game-card">
+                                <div class="game-thumb">${randomEmoji}</div>
+                                <div class="game-info">
+                                    <h3 class="game-title">${game.title}</h3>
+                                </div>
+                            </div>
+                        `;
+                        // Inject into the page
+                        gridContainer.innerHTML += cardHTML;
+                    });
                 } else {
-                    status.textContent = `❌ Backend Error: ${data.error}`;
-                    status.style.color = "#ef4444";
+                    alert('Backend returned an error: ' + result.error);
                 }
-            } catch (err) {
-                status.textContent = "❌ Network Execution Failed.";
-                status.style.color = "#ef4444";
-                output.textContent = err.message;
+
+            } catch (error) {
+                document.getElementById('loading-state').innerText = 'Network Error. Could not connect to backend.';
+                console.error('Fetch error:', error);
             }
-        });
+        }
+
+        // 6. Trigger the fetch as soon as the page loads
+        window.onload = fetchDashboardData;
     </script>
 </body>
 </html>
