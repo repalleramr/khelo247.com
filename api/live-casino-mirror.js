@@ -6,30 +6,25 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   try {
-    // 1. Get the root directory of your Vercel project
-    const rootDir = process.cwd();
+    // 1. We MUST hardcode the exact filename here so Vercel's bundler knows to include it
+    const exactFileName = 'Khelo24bet _ Live Fun Arena for Online Challenges.mht';
+    
+    // 2. Point directly to the file in the root directory
+    const filePath = path.join(process.cwd(), exactFileName);
 
-    // 2. Read all the files sitting in the root folder
-    const files = fs.readdirSync(rootDir);
-
-    // 3. Find the .mht file from your screenshot
-    const targetFileName = files.find(file => file.endsWith('.mht'));
-
-    if (!targetFileName) {
+    // 3. Double-check that Vercel successfully bundled it
+    if (!fs.existsSync(filePath)) {
        return res.status(404).json({ 
          success: false,
-         error: 'Offline MHT file not found.', 
-         message: 'Could not find the .mht file in the GitHub repository.' 
+         error: 'File stripped by Vercel.', 
+         message: `Vercel could not find the file. Ensure the name matches exactly: ${exactFileName}` 
        });
     }
 
     // 4. Read the raw data directly from the file system
-    const filePath = path.join(rootDir, targetFileName);
     let rawArchiveData = fs.readFileSync(filePath, 'utf-8');
 
-    // 5. CRITICAL FIX: Clean up the MHT "quoted-printable" encoding 
-    // MHT files replace "=" with "=3D" and add random line breaks ("=\n"). 
-    // We must reverse this before Cheerio can read the classes.
+    // 5. Clean up the MHT "quoted-printable" encoding 
     let cleanHtml = rawArchiveData.replace(/=3D/g, '=');
     cleanHtml = cleanHtml.replace(/=\r?\n/g, '');
 
@@ -38,7 +33,7 @@ export default async function handler(req, res) {
 
     // 7. Extract the data
     const extractedData = {
-      source: targetFileName,
+      source: exactFileName,
       // Grabs the first thing that looks like a balance
       balance: $('.balance, .account-balance, [class*="balance"]').first().text().trim() || 'Balance element not found',
       liveGames: []
@@ -65,3 +60,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
+// Forcing fresh Vercel build with the hardcoded static file path
