@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Khelo Mirror - Live Evaluation</title>
+    <title>Khelo24bet | Live Fun Arena for Online Challenges</title>
     <style>
-        /* CSS Reset & Variables */
         :root {
-            --bg-dark: #0a0a0c;
-            --bg-surface: #1a1b20;
-            --bg-card: #24252b;
-            --primary-gold: #ffc700;
+            --bg-dark: #1a1a1a;
+            --bg-surface: #111111;
+            --bg-card: #222222;
+            --primary-gold: #f9bb22;
+            --accent-gold-gradient: linear-gradient(180deg, #F0D670 0%, #BB891A 70.86%);
             --text-main: #ffffff;
-            --text-muted: #8b8c91;
-            --balance-green: #00e701;
+            --text-muted: #8f99a3;
+            --balance-green: #22c55e;
             --evo-color: #facc15;
             --ezugi-color: #ef4444;
         }
@@ -25,119 +25,173 @@
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: "Roboto", -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
-            padding-bottom: 70px; /* Space for bottom nav */
+            padding-bottom: 80px;
         }
 
-        /* Top Header */
-        .app-header {
-            background-color: var(--bg-surface);
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Core Navbar Styles from Template */
+        .mobile_header_rj {
+            background: #111111;
+            border-bottom: 1px solid #2a2e37;
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid #2a2b30;
         }
 
-        .brand {
-            font-size: 18px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-main);
+        .rj_header_top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            height: 60px;
         }
 
-        .brand span {
-            color: var(--primary-gold);
+        .rj_logo_sec {
+            height: 35px;
+            display: flex;
+            align-items: center;
         }
 
-        /* Wallet Section */
-        .wallet-pill {
-            background-color: #121316;
-            border: 1px solid #33343a;
-            border-radius: 20px;
-            padding: 6px 14px;
+        .rj_logo_sec img {
+            height: 100%;
+            width: auto;
+        }
+
+        .rj_header_middle_sec {
+            display: flex;
+            background: #1a1a1a;
+            border-top: 1px solid #2a2e37;
+            padding: 6px 16px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rj_coin_sec {
             display: flex;
             align-items: center;
             gap: 8px;
+            text-align: right;
         }
 
-        .wallet-icon {
+        .rj_coin_sec p {
+            margin: 0;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .rj_coin_sec span {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* Search Layout Frame */
+        .menu_and_search {
+            padding: 12px 16px;
+            background-color: var(--bg-dark);
+        }
+
+        .gameSearch-input {
+            width: 100%;
+            position: relative;
+        }
+
+        .gameSearch-input input {
+            width: 100%;
+            background-color: #2b2b2b;
+            border: 1px solid #3b3b3b;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: #ffffff;
             font-size: 14px;
+            outline: none;
         }
 
-        .balance-text {
-            color: var(--balance-green);
-            font-weight: 700;
-            font-size: 15px;
+        /* Horizontal Category Ribbon Scroll */
+        .scroll_main {
+            background-color: #111111;
+            border-bottom: 1px solid #2a2e37;
         }
 
-        /* Horizontal Scroll Categories */
-        .category-scroll {
+        .navbar-scroll {
             display: flex;
             overflow-x: auto;
-            padding: 12px 16px;
-            gap: 10px;
-            background-color: var(--bg-dark);
-            /* Hide scrollbar */
-            -ms-overflow-style: none;
+            margin: 0;
+            padding: 0;
+            list-style: none;
             scrollbar-width: none;
         }
-        
-        .category-scroll::-webkit-scrollbar {
+
+        .navbar-scroll::-webkit-scrollbar {
             display: none;
         }
 
-        .cat-btn {
-            background-color: var(--bg-surface);
+        .navtext {
+            padding: 14px 18px;
             color: var(--text-muted);
-            border: 1px solid #2a2b30;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             white-space: nowrap;
             cursor: pointer;
-            transition: all 0.2s;
+            position: relative;
+            text-transform: uppercase;
         }
 
-        .cat-btn.active {
+        .navtext.actives {
+            color: var(--primary-gold);
+        }
+
+        .navtext.actives span {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
             background-color: var(--primary-gold);
-            color: #000;
-            border-color: var(--primary-gold);
         }
 
-        /* Game Grid */
-        .game-container {
-            padding: 10px 16px;
+        /* Grid Framework Layout */
+        .main_parent_section {
+            padding: 16px;
+        }
+
+        .outer-head-title h3 {
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0 0 16px 0;
+            color: #ffffff;
+            border-left: 3px solid var(--primary-gold);
+            padding-left: 8px;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile app feel */
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
         .card {
             background-color: var(--bg-card);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            position: relative;
-            border: 1px solid #2a2b30;
+            border: 1px solid #333333;
+            display: flex;
+            flex-direction: column;
         }
 
         .card-image {
-            height: 120px;
-            background: linear-gradient(180deg, #2a2b30 0%, #1a1b20 100%);
+            height: 105px;
+            background: #2d2d2d;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
+            font-size: 36px;
         }
 
         .card-details {
@@ -148,175 +202,199 @@
         .game-title {
             font-size: 13px;
             font-weight: 600;
-            margin: 0 0 4px 0;
+            margin: 0 0 6px 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: #ffffff;
         }
 
         .provider-badge {
             font-size: 10px;
-            font-weight: 700;
+            font-weight: bold;
             text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
         }
-        .evo-text { color: var(--evo-color); }
-        .ezugi-text { color: var(--ezugi-color); }
 
-        /* Loading State */
-        .loader {
+        .badge-evo { background-color: rgba(250, 204, 21, 0.15); color: var(--evo-color); }
+        .badge-ezugi { background-color: rgba(239, 68, 68, 0.15); color: var(--ezugi-color); }
+
+        .status {
             text-align: center;
-            padding: 40px 20px;
             color: var(--primary-gold);
+            padding: 30px;
             font-size: 14px;
-            font-weight: 600;
         }
 
-        /* Bottom App Navigation */
-        .bottom-nav {
+        /* Sticky Layout Mobile Footer Bar */
+        .mobile_footer_new {
             position: fixed;
             bottom: 0;
             width: 100%;
-            background-color: var(--bg-surface);
-            border-top: 1px solid #2a2b30;
+            background-color: #111111;
+            border-top: 1px solid #2a2e37;
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            padding: 8px 0;
             z-index: 100;
         }
 
-        .nav-item {
+        .footer-tab {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
             color: var(--text-muted);
-            font-size: 10px;
-            font-weight: 600;
+            font-size: 11px;
+            text-decoration: none;
+            gap: 4px;
         }
-        
-        .nav-item.active {
+
+        .footer-tab.active {
             color: var(--primary-gold);
         }
 
-        .nav-icon {
-            font-size: 20px;
+        .footer-icon {
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="brand">Khelo<span>247</span></div>
-        <div class="wallet-pill">
-            <span class="wallet-icon">💰</span>
-            <span class="balance-text" id="balance-display">₹0.00</span>
+    <!-- Target Top Bar Structure -->
+    <header class="mobile_header_rj">
+        <div class="rj_header_top">
+            <div class="rj_logo_sec">
+                <strong style="color: #fff; font-size: 20px; letter-spacing: 0.5px;">KHELO<span style="color: var(--primary-gold)">24BET</span></strong>
+            </div>
+            <div style="background: var(--accent-gold-gradient); padding: 6px 14px; border-radius: 4px; color: #000; font-weight: bold; font-size: 13px;">
+                Deposit
+            </div>
+        </div>
+        <div class="rj_header_middle_sec">
+            <div style="font-size: 18px; color: var(--text-muted);">⚙️</div>
+            <div class="rj_coin_sec">
+                <p>Balance<br><span id="balance-display">0.00</span></p>
+            </div>
         </div>
     </header>
 
-    <div class="category-scroll">
-        <div class="cat-btn active" onclick="filterGames('All', this)">Live Casino</div>
-        <div class="cat-btn" onclick="filterGames('Evolution', this)">Evolution</div>
-        <div class="cat-btn" onclick="filterGames('Ezugi', this)">Ezugi</div>
-    </div>
-
-    <div class="game-container">
-        <div id="loading" class="loader">Loading Live Tables...</div>
-        <div class="grid" id="games-grid"></div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item">
-            <span class="nav-icon">🏠</span>
-            <span>Home</span>
+    <!-- Search Node -->
+    <section class="menu_and_search m12 top_search_visible">
+        <div class="gameSearch-input">
+            <input type="text" id="game-search-filter" onkeyup="searchQueryFilter()" placeholder="Search Games Here">
         </div>
-        <div class="nav-item active">
-            <span class="nav-icon">🎰</span>
+    </section>
+
+    <!-- Navigation Ribbon Categories -->
+    <section class="space_between scroll_main">
+        <ul class="navbar-scroll">
+            <li class="navtext actives" onclick="switchCategory('All', this)">All Games<span></span></li>
+            <li class="navtext" onclick="switchCategory('Evolution', this)">Evolution<span></span></li>
+            <li class="navtext" onclick="switchCategory('Ezugi', this)">Ezugi<span></span></li>
+        </ul>
+    </section>
+
+    <!-- Main Section Structure -->
+    <main class="main_parent_section">
+        <div class="outer-head-title">
+            <h3>🎰 Live Casino Platform</h3>
+        </div>
+        
+        <div id="loading-node" class="status">Parsing Environment Data Container...</div>
+        <div class="grid" id="games-grid-container"></div>
+    </main>
+
+    <!-- Application Footer Ribbon -->
+    <div class="mobile_footer_new">
+        <a class="footer-tab">
+            <span class="footer-icon">🏏</span>
+            <span>Sports</span>
+        </a>
+        <a class="footer-tab">
+            <span class="footer-icon">📈</span>
+            <span>Inplay</span>
+        </a>
+        <a class="footer-tab active">
+            <span class="footer-icon">🎰</span>
             <span>Casino</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon">📄</span>
-            <span>Bets</span>
-        </div>
-        <div class="nav-item">
-            <span class="nav-icon">👤</span>
-            <span>Profile</span>
-        </div>
+        </a>
+        <a class="footer-tab">
+            <span class="footer-icon">👤</span>
+            <span>Account</span>
+        </a>
     </div>
 
     <script>
-        const API_URL = 'https://khelo247-com.vercel.app/api/live-casino-mirror';
-        let allGames = []; // Store games globally so we can filter them
+        const BACKEND_ENDPOINT = 'https://khelo247-com.vercel.app/api/live-casino-mirror';
+        let internalCache = [];
 
-        async function init() {
+        async function pullStructure() {
             try {
-                const response = await fetch(API_URL);
-                const result = await response.json();
+                const response = await fetch(BACKEND_ENDPOINT);
+                const payload = await response.json();
                 
-                document.getElementById('loading').style.display = 'none';
+                document.getElementById('loading-node').style.display = 'none';
 
-                if (result.success) {
-                    // 1. Set Balance
-                    document.getElementById('balance-display').innerText = `₹${result.data.balance}`;
-                    
-                    // 2. Save games to memory for the filter buttons
-                    allGames = result.data.liveGames;
-                    
-                    // 3. Render all games initially
-                    renderGames(allGames);
+                if (payload.success) {
+                    document.getElementById('balance-display').innerText = `₹${payload.data.balance}`;
+                    internalCache = payload.data.liveGames;
+                    renderDataList(internalCache);
                 }
             } catch (err) {
-                document.getElementById('loading').innerText = 'Connection Error. Please refresh.';
+                document.getElementById('loading-node').innerText = 'Data connection interrupted.';
             }
         }
 
-        function renderGames(gamesToRender) {
-            const grid = document.getElementById('games-grid');
-            grid.innerHTML = ''; // Clear current grid
+        function renderDataList(dataset) {
+            const container = document.getElementById('games-grid-container');
+            container.innerHTML = '';
             
-            if(gamesToRender.length === 0) {
-                grid.innerHTML = '<div style="color: white; padding: 20px; grid-column: span 2; text-align: center;">No games found for this provider.</div>';
+            if(dataset.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); padding: 20px; grid-column: span 2; text-align: center;">No active matching games available.</div>';
                 return;
             }
 
-            gamesToRender.forEach((game, index) => {
-                // Emulate game thumbnails
-                const emojis = ['🙎‍♀️', '🃏', '🎲', '🎡'];
-                const icon = emojis[index % emojis.length];
+            dataset.forEach((item, index) => {
+                const iconArray = ['🎰', '🃏', '🎲', '🎡'];
+                const visualNode = iconArray[index % iconArray.length];
+                const badgeStyle = item.provider === 'Evolution' ? 'badge-evo' : 'badge-ezugi';
                 
-                const isEvo = game.provider === 'Evolution';
-                const providerClass = isEvo ? 'evo-text' : 'ezugi-text';
-                
-                const card = `
-                    <div class="card">
-                        <div class="card-image">${icon}</div>
-                        <div class="card-details">
-                            <h3 class="game-title">${game.title}</h3>
-                            <span class="provider-badge ${providerClass}">${game.provider}</span>
+                const elementLayout = `
+                    <a href="${item.link}" style="text-decoration: none; color: inherit; display: block;">
+                        <div class="card">
+                            <div class="card-image">${visualNode}</div>
+                            <div class="card-details">
+                                <h3 class="game-title">${item.title}</h3>
+                                <span class="provider-badge ${badgeStyle}">${item.provider}</span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 `;
-                grid.innerHTML += card;
+                container.innerHTML += elementLayout;
             });
         }
 
-        // Logic for the Filter Buttons
-        window.filterGames = function(provider, buttonElement) {
-            // Update active button styling
-            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
+        window.switchCategory = function(targetProvider, element) {
+            document.querySelectorAll('.navtext').forEach(node => node.classList.remove('actives'));
+            element.classList.add('actives');
 
-            // Filter the array
-            if (provider === 'All') {
-                renderGames(allGames);
+            if (targetProvider === 'All') {
+                renderDataList(internalCache);
             } else {
-                const filtered = allGames.filter(game => game.provider === provider);
-                renderGames(filtered);
+                const subset = internalCache.filter(game => game.provider === targetProvider);
+                renderDataList(subset);
             }
         };
 
-        // Start the app
-        window.onload = init;
+        window.searchQueryFilter = function() {
+            const searchStr = document.getElementById('game-search-filter').value.toLowerCase();
+            const matchingNodes = internalCache.filter(game => game.title.toLowerCase().includes(searchStr));
+            renderDataList(matchingNodes);
+        };
+
+        window.onload = pullStructure;
     </script>
 </body>
 </html>
